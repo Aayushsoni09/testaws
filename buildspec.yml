@@ -1,0 +1,16 @@
+version: 0.2
+phases:
+  install:
+    commands:
+      - aws codeartifact login --tool npm --repository my-npm-store --domain my-domain
+      - npm install
+  build:
+    commands:
+      - npm run build
+artifacts:
+  files:
+    - '**/*'
+  base-directory: build
+post_build:
+  commands:
+    - aws s3 cp build s3://my-nextjs-artifacts/build --recursive
