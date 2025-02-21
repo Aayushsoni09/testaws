@@ -2,16 +2,23 @@ version: 0.2
 phases:
   install:
     commands:
+      - echo "Running aws codeartifact login..."
       - aws codeartifact login --tool npm --repository my-npm-store --domain my-domain
-      - cat ~/.npmrc | grep _authToken  # Print the token expiry time
+      - echo "Waiting for 10 seconds..."
+      - sleep 10
+      - echo "Printing ~/.npmrc file..."
+      - cat ~/.npmrc
+      - echo "Running npm install..."
       - npm install
-build:
+  build:
     commands:
+      - echo "Running npm run build..."
       - npm run build
-artifacts:
-  files:
-    - '**/*'
-  base-directory: build
-post_build:
-  commands:
-    - aws s3 cp build s3://my-nextjs-artifacts/build --recursive
+  artifacts:
+    files:
+      - '**/*'
+    base-directory: build
+  post_build:
+    commands:
+      - echo "Uploading artifacts to S3..."
+      - aws s3 cp build s3://my-nextjs-artifacts/build --recursive
