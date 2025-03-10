@@ -1,37 +1,21 @@
-version: 0.2
+install:
+  commands:
+    - echo "Fetching fresh CodeArtifact authorization token..."
+    - |
+      CODEARTIFACT_AUTH_TOKEN=$(aws codeartifact get-authorization-token --domain my-domain --region ap-southeast-2 --query authorizationToken --output text)
+      if [ -z "$CODEARTIFACT_AUTH_TOKEN" ]; then 
+        echo "ERROR: Failed to fetch CodeArtifact auth token"; 
+        exit 1; 
+      fi
+      echo "Token fetched successfully."
 
-phases:
-  install:
-    commands:
-      - echo "Fetching fresh CodeArtifact authorization token..."
-      - export CODEARTIFACT_AUTH_TOKEN=$(aws codeartifact get-authorization-token --domain my-domain --region ap-southeast-2 --query authorizationToken --output text)
-      
-      # Verify if the token is retrieved
-      - if [ -z "$CODEARTIFACT_AUTH_TOKEN" ]; then echo "ERROR: Failed to fetch CodeArtifact auth token"; exit 1; fi
-      
-      # Configure npm to use the correct registry and auth token
-      - echo "registry=https://my-domain-381491835701.d.codeartifact.ap-southeast-2.amazonaws.com/npm/my-npm-store/" > ~/.npmrc
-      - echo "//my-domain-381491835701.d.codeartifact.ap-southeast-2.amazonaws.com/npm/my-npm-store/:always-auth=true" >> ~/.npmrc
-      - echo "//my-domain-381491835701.d.codeartifact.ap-southeast-2.amazonaws.com/npm/my-npm-store/:_authToken=$CODEARTIFACT_AUTH_TOKEN" >> ~/.npmrc
-      
-      # Verify .npmrc content
-      - cat ~/.npmrc
-      
-      # Install dependencies
-      - echo "Installing dependencies..."
-      - npm install
+    - echo "Configuring npm authentication..."
+    - echo "registry=https://my-domain-381491835701.d.codeartifact.ap-southeast-2.amazonaws.com/npm/my-npm-store/" > ~/.npmrc
+    - echo "//my-domain-381491835701.d.codeartifact.ap-southeast-2.amazonaws.com/npm/my-npm-store/:always-auth=true" >> ~/.npmrc
+    - echo "//my-domain-381491835701.d.codeartifact.ap-southeast-2.amazonaws.com/npm/my-npm-store/:_authToken=${CODEARTIFACT_AUTH_TOKEN}" >> ~/.npmrc
 
-  build:
-    commands:
-      - echo "Running build process..."
-      - npm run build
+    - echo "Verifying .npmrc content..."
+    - cat ~/.npmrc
 
-  post_build:
-    commands:
-      - echo "Build completed successfully."
-      - echo "Cleaning up..."
-      - rm -f ~/.npmrc
-
-artifacts:
-  files:
-    - '**/*'
+    - echo "Installing dependencies..."
+    - npm install
