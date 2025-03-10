@@ -1,21 +1,21 @@
-install:
-  commands:
-    - echo "Fetching fresh CodeArtifact authorization token..."
-    - |
-      CODEARTIFACT_AUTH_TOKEN=$(aws codeartifact get-authorization-token --domain my-domain --region ap-southeast-2 --query authorizationToken --output text)
-      if [ -z "$CODEARTIFACT_AUTH_TOKEN" ]; then 
-        echo "ERROR: Failed to fetch CodeArtifact auth token"; 
-        exit 1; 
-      fi
-      echo "Token fetched successfully."
-
-    - echo "Configuring npm authentication..."
-    - echo "registry=https://my-domain-381491835701.d.codeartifact.ap-southeast-2.amazonaws.com/npm/my-npm-store/" > ~/.npmrc
-    - echo "//my-domain-381491835701.d.codeartifact.ap-southeast-2.amazonaws.com/npm/my-npm-store/:always-auth=true" >> ~/.npmrc
-    - echo "//my-domain-381491835701.d.codeartifact.ap-southeast-2.amazonaws.com/npm/my-npm-store/:_authToken=${CODEARTIFACT_AUTH_TOKEN}" >> ~/.npmrc
-
-    - echo "Verifying .npmrc content..."
-    - cat ~/.npmrc
-
-    - echo "Installing dependencies..."
-    - npm install
+version: 0.2
+phases:
+  install:
+    commands:
+      - echo "Fetching fresh CodeArtifact authorization token..."
+      - export CODEARTIFACT_AUTH_TOKEN=$(aws codeartifact get-authorization-token --domain my-domain --region ap-southeast-2 --query authorizationToken --output text)
+      - echo "//my-domain-381491835701.d.codeartifact.ap-southeast-2.amazonaws.com/npm/my-npm-store/:_authToken=$CODEARTIFACT_AUTH_TOKEN" >> ~/.npmrc
+      - echo "Installing dependencies..."
+      - npm install  
+build:
+    commands:
+      - echo "Running build process..."
+      - npm run build
+post_build:
+    commands:
+      - echo "Build completed successfully."
+      - echo "Cleaning up..."
+      - rm -f ~/.npmrc
+artifacts:
+  files:
+    - '**/*'
