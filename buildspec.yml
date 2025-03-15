@@ -17,6 +17,10 @@ phases:
   post_build:
     commands:
       - echo "Build completed successfully."
+      - echo "Zipping the deployment package..."
+      - zip -r deployment-package.zip .  # Zips everything into deployment-package.zip
+      - echo "Uploading to S3..."
+      - aws s3 cp deployment-package.zip s3://nextjs-build-artifact-monkweb/deployment-package.zip
       - echo "Cleaning up..."
       - rm -f ~/.npmrc
 
