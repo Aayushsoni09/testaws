@@ -22,5 +22,9 @@ phases:
 
 artifacts:
   files:
-    - '**/*'
+    - '**/*'   # Includes all files in the build output
+    - appspec.yml
+    - scripts/**/*
+  discard-paths: no
+
 
