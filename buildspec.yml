@@ -18,4 +18,9 @@ post_build:
       - rm -f ~/.npmrc
 artifacts:
   files:
-    - '**/*'
+    - '**/*'   # Includes all files in the build output
+    - appspec.yml
+    - scripts/**/*
+  discard-paths: no
+  base-directory: .  # Ensures the zip contains only necessary files
+  name: deployment-package  # Creates deployment-package.zip
