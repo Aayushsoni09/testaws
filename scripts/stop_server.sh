@@ -1,12 +1,11 @@
 #!/bin/bash
-# Stop Next.js application via PM2 and Nginx
-pm2 stop nextjsproject || true
-pm2 delete nextjsproject || true
+echo "=== Stopping Application ==="
 
-# Stop Nginx (if running)
-if systemctl is-active --quiet nginx; then
-    sudo systemctl stop nginx
-fi
+# Stop PM2 process
+pm2 stop nextjsproject || echo "PM2 process not found"
+pm2 delete nextjsproject || echo "PM2 process not found"
 
-# Optional: Kill any remaining Node processes
-pkill -f "node.*next" || true
+# Stop Nginx
+sudo systemctl stop nginx || echo "Nginx not running"
+
+echo "=== Cleanup Complete ==="
