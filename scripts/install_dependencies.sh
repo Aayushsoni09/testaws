@@ -15,9 +15,9 @@ sudo yum clean metadata
 sudo yum install -y nodejs npm
 
 # Verify Node.js installation
-node -v
-npm -v
-
+node -v || exit 1
+npm -v || exit 1
+nginx -v || exit 1
 # Install PM2
 sudo npm install -g pm2
 
