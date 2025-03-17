@@ -1,46 +1,48 @@
 #!/bin/bash
 
-# Update system and install necessary packages
+# Update system packages
 sudo yum update -y
-sudo yum install -y nginx
 
-# Install Node.js and npm
-curl -fsSL https://rpm.nodesource.com/setup_18.x | sudo bash -
-sudo yum install -y nodejs
+# Install Node.js
+sudo amazon-linux-extras enable nodejs18
+sudo yum install -y nodejs npm
 
-# Install PM2 globally
-sudo npm install -g pm2
+# Verify installation
+node -v
+npm -v
 
-# Navigate to project directory (assuming it's /var/www/nextjsproject)
+# Ensure the application directory exists
+sudo mkdir -p /var/www/nextjsproject
+sudo chown ec2-user:ec2-user /var/www/nextjsproject
 cd /var/www/nextjsproject
 
-# Install project dependencies
-npm install
+# Install dependencies
+su - ec2-user -c "npm install"
 
-# Build and start Next.js application
-npm run build
-pm start &
+# Install PM2
+su - ec2-user -c "npm install -g pm2"
 
-# Configure NGINX as a reverse proxy for Next.js
-sudo cat << EOF > /etc/nginx/conf.d/nextjs_proxy.conf
+# Install and start Nginx
+sudo yum install -y nginx
+sudo systemctl start nginx
+sudo systemctl enable nginx
+
+# Create Nginx config for Next.js (if missing)
+cat <<EOF | sudo tee /etc/nginx/conf.d/nextjs_proxy.conf
 server {
     listen 80;
-    server_name app.nextjsproject.com;
+    server_name _;
 
     location / {
         proxy_pass http://localhost:3000;
         proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Upgrade \$http_upgrade;
         proxy_set_header Connection 'upgrade';
-        proxy_set_header Host $host;
-        proxy_cache_bypass $http_upgrade;
+        proxy_set_header Host \$host;
+        proxy_cache_bypass \$http_upgrade;
     }
 }
 EOF
 
-# Restart NGINX to apply changes
-sudo systemctl enable nginx
+# Restart Nginx
 sudo systemctl restart nginx
-
-
-
