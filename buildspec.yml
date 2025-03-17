@@ -23,4 +23,4 @@ artifacts:
     - scripts/**/*
   discard-paths: no
   base-directory: .  # Ensures the zip contains only necessary files
-  name: deployment-package  # Creates deployment-package.zip
+ 
