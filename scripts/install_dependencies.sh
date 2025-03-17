@@ -1,31 +1,48 @@
 #!/bin/bash
+set -e  # Exit script on first error
 
-# Enable Amazon Linux Extras for Node.js
+echo "🚀 Removing any existing Node.js installations..."
+sudo yum remove -y nodejs npm || true  # Ignore errors if they don't exist
+sudo rm -rf /usr/local/lib/node_modules || true
+
+echo "🚀 Cleaning yum cache..."
+sudo yum clean all
+
+echo "🚀 Ensuring Amazon Linux Extras is installed..."
+sudo yum install -y amazon-linux-extras
 sudo amazon-linux-extras enable nodejs18
+
+echo "🚀 Installing Node.js and npm from Amazon Linux Extras..."
 sudo yum install -y nodejs npm
 
-# Verify Node.js installation
+# Verify installation
 if ! command -v node &> /dev/null; then
-    echo "❌ Node.js is not installed. Exiting..."
+    echo "❌ Node.js is still not installed! Exiting..."
     exit 1
 fi
 
 if ! command -v npm &> /dev/null; then
-    echo "❌ npm is not installed. Exiting..."
+    echo "❌ npm is still not installed! Exiting..."
     exit 1
 fi
 
-# Install PM2 globally
+echo "✅ Node.js and npm installed successfully!"
+node -v
+npm -v
+
+echo "🚀 Installing PM2 globally..."
 sudo npm install -g pm2
 
-# Install Nginx
+echo "🚀 Installing and configuring Nginx..."
 sudo amazon-linux-extras enable nginx1
 sudo yum install -y nginx
+sudo systemctl start nginx
+sudo systemctl enable nginx
 
 # Ensure Nginx configuration directory exists
 sudo mkdir -p /etc/nginx/conf.d
 
-# Create Nginx configuration for Next.js
+# Create Nginx config for Next.js
 cat <<EOF | sudo tee /etc/nginx/conf.d/nextjs_proxy.conf
 server {
     listen 80;
@@ -42,6 +59,7 @@ server {
 }
 EOF
 
-# Start and enable Nginx
-sudo systemctl start nginx
-sudo systemctl enable nginx
+echo "🚀 Restarting Nginx..."
+sudo systemctl restart nginx
+
+echo "✅ All dependencies installed successfully!"
