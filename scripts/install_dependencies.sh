@@ -1,5 +1,14 @@
 #!/bin/bash
+# For Amazon Linux 2023
+sudo dnf install -y nginx
+sudo systemctl enable nginx
+sudo systemctl start nginx
 
+# Verify installation
+if ! command -v nginx &> /dev/null; then
+    echo "❌ Nginx installation failed!"
+    exit 1
+fi
 # Enable and install Node.js 18
 sudo amazon-linux-extras enable nodejs18
 sudo yum clean metadata
