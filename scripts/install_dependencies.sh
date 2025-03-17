@@ -3,13 +3,19 @@
 # Update system packages
 sudo yum update -y
 
-# Install Node.js
+# Install Node.js from Amazon Linux Extras
 sudo amazon-linux-extras enable nodejs18
 sudo yum install -y nodejs npm
 
-# Verify installation
-node -v
-npm -v
+# Verify Node.js and npm installation
+if ! command -v node &> /dev/null; then
+    echo "❌ Node.js is not installed. Exiting..."
+    exit 1
+fi
+if ! command -v npm &> /dev/null; then
+    echo "❌ npm is not installed. Exiting..."
+    exit 1
+fi
 
 # Ensure the application directory exists
 sudo mkdir -p /var/www/nextjsproject
@@ -19,15 +25,17 @@ cd /var/www/nextjsproject
 # Install dependencies
 su - ec2-user -c "npm install"
 
-# Install PM2
+# Install PM2 for process management
 su - ec2-user -c "npm install -g pm2"
 
-# Install and start Nginx
+# Install Nginx using Amazon Linux Extras
+sudo amazon-linux-extras enable nginx1
 sudo yum install -y nginx
-sudo systemctl start nginx
-sudo systemctl enable nginx
 
-# Create Nginx config for Next.js (if missing)
+# Ensure Nginx config directory exists
+sudo mkdir -p /etc/nginx/conf.d
+
+# Create Nginx config for Next.js
 cat <<EOF | sudo tee /etc/nginx/conf.d/nextjs_proxy.conf
 server {
     listen 80;
@@ -44,5 +52,6 @@ server {
 }
 EOF
 
-# Restart Nginx
-sudo systemctl restart nginx
+# Start & enable Nginx
+sudo systemctl start nginx
+sudo systemctl enable nginx
