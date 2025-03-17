@@ -1,8 +1,11 @@
 version: 0.0
 os: linux
 files:
-  - source: /
-    destination: /var/www/nextjsproject/
+files:
+  - source: scripts/*
+    destination: /var/www/nextjsproject/scripts
+  - source: appspec.yml
+    destination: /var/www/nextjsproject
 hooks:
   BeforeInstall:
     - location: scripts/install_dependencies.sh
