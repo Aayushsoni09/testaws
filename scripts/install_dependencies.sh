@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e  # Exit on error
+set -e  # Exit if any command fails
 
 echo "🚀 Cleaning yum cache..."
 sudo yum clean all
@@ -7,10 +7,8 @@ sudo yum clean all
 echo "🚀 Removing any old Node.js versions..."
 sudo yum remove -y nodejs npm || true  # Ignore errors if they don’t exist
 
-echo "🚀 Enabling Amazon Linux Extras for Node.js..."
-sudo amazon-linux-extras enable nodejs18
-
-echo "🚀 Installing Node.js and npm..."
+echo "🚀 Installing Node.js 18 from NodeSource..."
+curl -fsSL https://rpm.nodesource.com/setup_18.x | sudo bash -
 sudo yum install -y nodejs
 
 echo "🚀 Verifying installation..."
@@ -31,7 +29,6 @@ echo "🚀 Installing PM2 globally..."
 sudo npm install -g pm2
 
 echo "🚀 Installing Nginx..."
-sudo amazon-linux-extras enable nginx1
 sudo yum install -y nginx
 
 echo "🚀 Starting and enabling Nginx..."
