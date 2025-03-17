@@ -1,7 +1,7 @@
 #!/bin/bash
 # Stop Next.js application via PM2 and Nginx
-pm2 stop next-app || true
-pm2 delete next-app || true
+pm2 stop nextjsproject || true
+pm2 delete nextjsproject || true
 
 # Stop Nginx (if running)
 if systemctl is-active --quiet nginx; then
