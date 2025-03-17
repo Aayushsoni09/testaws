@@ -3,15 +3,16 @@
 # Update system packages
 sudo yum update -y
 
-# Install Node.js from Amazon Linux Extras
+# Install Node.js from Amazon Linux Extras (No GLIBC issues)
 sudo amazon-linux-extras enable nodejs18
 sudo yum install -y nodejs npm
 
-# Verify Node.js and npm installation
+# Verify Node.js installation
 if ! command -v node &> /dev/null; then
     echo "❌ Node.js is not installed. Exiting..."
     exit 1
 fi
+
 if ! command -v npm &> /dev/null; then
     echo "❌ npm is not installed. Exiting..."
     exit 1
