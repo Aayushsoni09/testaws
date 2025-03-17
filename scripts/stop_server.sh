@@ -1,11 +1,11 @@
 #!/bin/bash
-echo "=== Stopping Application ==="
+APP_NAME="nextjsproject"
 
-# Stop PM2 process
-pm2 stop nextjsproject || echo "PM2 process not found"
-pm2 delete nextjsproject || echo "PM2 process not found"
+# Stop PM2
+pm2 stop "$APP_NAME" || true
+pm2 delete "$APP_NAME" || true
 
-# Stop Nginx
-sudo systemctl stop nginx || echo "Nginx not running"
-
-echo "=== Cleanup Complete ==="
+# Stop Nginx (if exists)
+if systemctl list-unit-files | grep -q nginx.service; then
+    sudo systemctl stop nginx
+fi
