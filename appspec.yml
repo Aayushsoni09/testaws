@@ -1,10 +1,10 @@
 version: 0.0
 os: linux
 files:
-  - source: scripts/startserver.sh
-    destination: /var/www/nextjsproject/scripts/startserver.sh
-  - source: scripts/stopserver.sh
-    destination: /var/www/nextjsproject/scripts/stopserver.sh
+  - source: scripts/start_server.sh
+    destination: /var/www/nextjsproject/scripts/start_server.sh
+  - source: scripts/stop_server.sh
+    destination: /var/www/nextjsproject/scripts/stop_server.sh
   - source: scripts/install_dependencies.sh
     destination: /var/www/nextjsproject/scripts/install_dependencies.sh
   - source: appspec.yml
@@ -14,8 +14,8 @@ hooks:
     - location: /var/www/nextjsproject/scripts/install_dependencies.sh
       timeout: 300
   ApplicationStart:
-    - location: /var/www/nextjsproject/scripts/startserver.sh
+    - location: /var/www/nextjsproject/scripts/start_server.sh
       timeout: 300
   ApplicationStop:
-    - location: /var/www/nextjsproject/scripts/stopserver.sh
+    - location: /var/www/nextjsproject/scripts/stop_server.sh
       timeout: 300
