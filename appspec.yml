@@ -1,8 +1,7 @@
 version: 0.0
 os: linux
 files:
-files:
-  - source: scripts/*
+  - source: scripts/**
     destination: /var/www/nextjsproject/scripts
   - source: appspec.yml
     destination: /var/www/nextjsproject
@@ -16,5 +15,3 @@ hooks:
   ApplicationStop:
     - location: scripts/stop_server.sh
       timeout: 300
-      
-
