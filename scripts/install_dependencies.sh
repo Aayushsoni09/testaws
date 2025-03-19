@@ -1,32 +1,19 @@
 #!/bin/bash
-# For Amazon Linux 2023
+# Create deployment directory
+sudo mkdir -p /var/www/nextjsproject
+sudo chown -R ec2-user:ec2-user /var/www/nextjsproject
+
+# Install Node.js 18
+sudo dnf module install -y nodejs:18
+sudo dnf install -y npm
+
+# Install Nginx
 sudo dnf install -y nginx
-sudo systemctl enable nginx
-sudo systemctl start nginx
 
-# Verify installation
-if ! command -v nginx &> /dev/null; then
-    echo "❌ Nginx installation failed!"
-    exit 1
-fi
-# Enable and install Node.js 18
-sudo amazon-linux-extras enable nodejs18
-sudo yum clean metadata
-sudo yum install -y nodejs npm
-
-# Verify Node.js installation
-node -v || exit 1
-npm -v || exit 1
-nginx -v || exit 1
 # Install PM2
 sudo npm install -g pm2
 
-# Install Nginx
-sudo amazon-linux-extras enable nginx1
-sudo yum install -y nginx
-
-# Create Nginx config
-sudo mkdir -p /etc/nginx/conf.d
+# Configure Nginx
 sudo tee /etc/nginx/conf.d/nextjs_proxy.conf > /dev/null <<'EOF'
 server {
     listen 80;
@@ -43,6 +30,13 @@ server {
 }
 EOF
 
-# Start Nginx
-sudo systemctl start nginx
+# Enable and start services
 sudo systemctl enable nginx
+sudo systemctl start nginx
+
+# Verify installations
+echo "=== Versions ==="
+node -v || { echo "❌ Node.js installation failed!"; exit 1; }
+npm -v || { echo "❌ npm installation failed!"; exit 1; }
+nginx -v || { echo "❌ Nginx installation failed!"; exit 1; }
+pm2 --version || { echo "❌ PM2 installation failed!"; exit 1; }
