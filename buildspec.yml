@@ -17,6 +17,7 @@ phases:
     commands:
       - echo "Setting executable permissions for deployment scripts..."
       - find scripts/ -name "*.sh" -exec chmod 755 {} \;
+      - dos2unix scripts/*.sh
       - echo "Converting line endings for shell scripts..."
       - find scripts/ -name "*.sh" -exec dos2unix {} \;
       - echo "Build completed successfully."
