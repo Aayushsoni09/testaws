@@ -7,23 +7,9 @@ echo "=== Starting dependencies installation ==="
 sudo mkdir -p /var/www/nextjsproject
 sudo chown -R ec2-user:ec2-user /var/www/nextjsproject
 
-# Debug - check which package managers are available
-echo "=== Checking package managers ==="
-which yum || echo "yum not found"
-which dnf || echo "dnf not found"
-
-# Install Node.js using NVM (Node Version Manager)
-echo "=== Installing NVM and Node.js ==="
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # Load nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # Load bash_completion
-nvm install 18
-nvm use 18
-
-# Make Node.js available for sudo commands
-sudo ln -sf $(which node) /usr/bin/node
-sudo ln -sf $(which npm) /usr/bin/npm
+# Install Node.js using the Amazon Linux extras repository
+echo "=== Installing Node.js ==="
+sudo amazon-linux-extras install -y nodejs14
 
 # Install Nginx
 echo "=== Installing Nginx ==="
@@ -31,8 +17,7 @@ sudo amazon-linux-extras install -y nginx1
 
 # Install PM2
 echo "=== Installing PM2 ==="
-npm install -g pm2
-sudo ln -sf $(which pm2) /usr/bin/pm2
+sudo npm install -g pm2
 
 # Configure Nginx
 echo "=== Configuring Nginx ==="
