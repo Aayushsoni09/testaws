@@ -4,7 +4,7 @@ set -e  # Exit on any error
 echo "=== Starting server ==="
 
 # Load NVM and set up Node.js environment
-export NVM_DIR="/home/ec2-user/.nvm"  # Change to /root/.nvm if installed as root
+export NVM_DIR="/root/.nvm"  # Matches runas: root
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" || { echo "❌ NVM not found at $NVM_DIR"; exit 1; }
 
 # Ensure the correct Node.js version is used
