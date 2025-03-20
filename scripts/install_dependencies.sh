@@ -7,19 +7,29 @@ echo "=== Starting dependencies installation ==="
 sudo mkdir -p /var/www/nextjsproject
 sudo chown -R ec2-user:ec2-user /var/www/nextjsproject
 
-# Install Node.js using Amazon Linux extras repository
-echo "=== Installing Node.js ==="
-sudo amazon-linux-extras enable nodejs12
-sudo yum clean metadata
-sudo yum install -y nodejs
+# Install NVM (Node Version Manager)
+echo "=== Installing NVM ==="
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+
+# Source NVM into the current shell session
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
+# Install Node.js 14 using NVM
+echo "=== Installing Node.js 14 ==="
+nvm install 14
+
+# Set Node.js 14 as the default version
+nvm use 14
+nvm alias default 14
 
 # Install Nginx
 echo "=== Installing Nginx ==="
 sudo amazon-linux-extras install -y nginx1
 
-# Install PM2
+# Install PM2 globally
 echo "=== Installing PM2 ==="
-sudo npm install -g pm2
+npm install -g pm2
 
 # Configure Nginx
 echo "=== Configuring Nginx ==="
