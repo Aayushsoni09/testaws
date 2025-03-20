@@ -3,6 +3,13 @@ set -e  # Exit immediately if a command exits with a non-zero status
 
 echo "=== Starting dependencies installation ==="
 
+# Determine the user and home directory
+if [ "$USER" == "root" ]; then
+    NVM_DIR="/root/.nvm"
+else
+    NVM_DIR="$HOME/.nvm"
+fi
+
 # Create deployment directory
 sudo mkdir -p /var/www/nextjsproject
 sudo chown -R ec2-user:ec2-user /var/www/nextjsproject
@@ -12,12 +19,15 @@ echo "=== Installing NVM ==="
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
 
 # Source NVM into the current shell session
-export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+if [ $? -ne 0 ]; then
+    echo "❌ Failed to source NVM. Check if $NVM_DIR/nvm.sh exists."
+    exit 1
+fi
 
 # Install Node.js 14 using NVM
 echo "=== Installing Node.js 14 ==="
-nvm install 14
+nvm install 14 || { echo "❌ NVM failed to install Node.js 14"; exit 1; }
 
 # Set Node.js 14 as the default version
 nvm use 14
@@ -25,11 +35,11 @@ nvm alias default 14
 
 # Install Nginx
 echo "=== Installing Nginx ==="
-sudo amazon-linux-extras install -y nginx1
+sudo amazon-linux-extras install -y nginx1 || { echo "❌ Nginx installation failed"; exit 1; }
 
 # Install PM2 globally
 echo "=== Installing PM2 ==="
-npm install -g pm2
+npm install -g pm2 || { echo "❌ PM2 installation failed"; exit 1; }
 
 # Configure Nginx
 echo "=== Configuring Nginx ==="
@@ -51,7 +61,7 @@ EOF
 # Enable and start services
 echo "=== Starting services ==="
 sudo systemctl enable nginx
-sudo systemctl start nginx
+sudo systemctl start nginx || { echo "❌ Nginx failed to start"; exit 1; }
 
 # Verify installations
 echo "=== Verifying Versions ==="
