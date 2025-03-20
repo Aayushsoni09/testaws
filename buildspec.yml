@@ -19,6 +19,8 @@ phases:
       - find scripts/ -name "*.sh" -exec chmod 755 {} \;
       - echo "Converting line endings..."
       - find scripts/ -name "*.sh" -exec dos2unix {} \;
+      - echo "Verifying permissions..."
+      - ls -la scripts/
       - echo "Cleaning sensitive files..."
       - rm -f .npmrc
       - echo "Build completed successfully."
