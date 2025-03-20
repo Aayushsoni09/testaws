@@ -7,9 +7,10 @@ echo "=== Starting dependencies installation ==="
 sudo mkdir -p /var/www/nextjsproject
 sudo chown -R ec2-user:ec2-user /var/www/nextjsproject
 
-# Install Node.js using the Amazon Linux extras repository
-echo "=== Installing Node.js ==="
-sudo amazon-linux-extras install -y nodejs14
+# Install Node.js 14 from NodeSource repository (compatible with Amazon Linux 2)
+echo "=== Installing Node.js 14 ==="
+curl -sL https://rpm.nodesource.com/setup_14.x | sudo bash -
+sudo yum install -y nodejs
 
 # Install Nginx
 echo "=== Installing Nginx ==="
