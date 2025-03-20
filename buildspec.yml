@@ -4,7 +4,7 @@ phases:
     commands:
       - echo "Fetching fresh CodeArtifact authorization token..."
       - export CODEARTIFACT_AUTH_TOKEN=$(aws codeartifact get-authorization-token --domain my-domain --region ap-southeast-2 --query authorizationToken --output text)
-      - echo "//my-domain-381491835701.d.codeartifact.ap-southeast-2.amazonaws.com/npm/my-npm-store/:_authToken=$CODEARTIFACT_AUTH_TOKEN" >> ~/.npmrc
+      - echo "//my-domain-381491835701.d.codeartifact.ap-southeast-2.amazonaws.com/npm/my-npm-store/:_authToken=${CODEARTIFACT_AUTH_TOKEN}" > .npmrc
       - echo "Installing dependencies..."
       - npm install
   
@@ -15,23 +15,22 @@ phases:
 
   post_build:
     commands:
-      - echo "Setting executable permissions for deployment scripts..."
+      - echo "Setting executable permissions..."
       - find scripts/ -name "*.sh" -exec chmod 755 {} \;
-      - dos2unix scripts/*.sh
-      - echo "Converting line endings for shell scripts..."
+      - echo "Converting line endings..."
       - find scripts/ -name "*.sh" -exec dos2unix {} \;
+      - echo "Cleaning sensitive files..."
+      - rm -f .npmrc
       - echo "Build completed successfully."
-      - echo "Cleaning up..."
-      - rm -f ~/.npmrc
 
 artifacts:
   files:
     - appspec.yml
-    - scripts/**/*
-    - public/**/*
-    - src/**/*
+    - scripts/**
+    - public/**
+    - src/**
     - package*.json
     - next.config.mjs
+    - .npmrc  # Only include if needed for deployment
   discard-paths: no
   base-directory: .
- 
