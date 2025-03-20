@@ -3,19 +3,13 @@ set -e  # Exit immediately if a command exits with a non-zero status
 
 echo "=== Starting dependencies installation ==="
 
-# Determine the user and home directory
-if [ "$USER" == "root" ]; then
-    NVM_DIR="/root/.nvm"
-else
-    NVM_DIR="$HOME/.nvm"
-fi
-
 # Create deployment directory
 sudo mkdir -p /var/www/nextjsproject
 sudo chown -R ec2-user:ec2-user /var/www/nextjsproject
 
-# Install NVM (Node Version Manager)
+# Install NVM (Node Version Manager) as root
 echo "=== Installing NVM ==="
+export NVM_DIR="/root/.nvm"
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
 
 # Source NVM into the current shell session
