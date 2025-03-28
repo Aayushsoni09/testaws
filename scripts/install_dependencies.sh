@@ -1,34 +1,37 @@
 #!/bin/bash
-set -e
+set -e  # Exit on any error
 
 echo "=== Starting dependencies installation ==="
 
-# Create deployment directory
-mkdir -p /var/www/nextjsproject
-chown -R ec2-user:ec2-user /var/www/nextjsproject
+# Create deployment directory if it doesn’t exist (requires sudo)
+if [ ! -d "/var/www/nextjsproject" ]; then
+    sudo mkdir -p /var/www/nextjsproject
+fi
+
+# Change ownership to ec2-user (requires sudo)
+sudo chown -R ec2-user:ec2-user /var/www/nextjsproject || { echo "❌ Failed to change ownership of /var/www/nextjsproject"; exit 1; }
 
 # Install NVM as ec2-user
 echo "=== Installing NVM ==="
 export NVM_DIR="/home/ec2-user/.nvm"
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash || { echo "❌ NVM installation failed"; exit 1; }
 
 # Source NVM
-echo "=== Sourcing NVM ==="
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" || { echo "❌ NVM not found at $NVM_DIR"; exit 1; }
 
 # Install Node.js 14
 echo "=== Installing Node.js 14 ==="
-nvm install 14
+nvm install 14 || { echo "❌ Failed to install Node.js 14"; exit 1; }
 nvm use 14
 nvm alias default 14
 
 # Install Nginx (requires sudo)
 echo "=== Installing Nginx ==="
-sudo amazon-linux-extras install -y nginx1
+sudo amazon-linux-extras install -y nginx1 || { echo "❌ Nginx installation failed"; exit 1; }
 
 # Install PM2 globally
 echo "=== Installing PM2 ==="
-npm install -g pm2
+npm install -g pm2 || { echo "❌ PM2 installation failed"; exit 1; }
 
 # Configure Nginx (requires sudo)
 echo "=== Configuring Nginx ==="
@@ -47,16 +50,16 @@ server {
 }
 EOF
 
-# Enable and start services (requires sudo)
+# Start and enable Nginx (requires sudo)
 echo "=== Starting services ==="
-sudo systemctl enable nginx
-sudo systemctl start nginx
+sudo systemctl enable nginx || { echo "❌ Failed to enable Nginx"; exit 1; }
+sudo systemctl start nginx || { echo "❌ Failed to start Nginx"; exit 1; }
 
 # Verify installations
 echo "=== Verifying Versions ==="
-node -v
-npm -v
-nginx -v
-pm2 --version
+node -v || { echo "❌ Node.js not installed"; exit 1; }
+npm -v || { echo "❌ npm not installed"; exit 1; }
+nginx -v || { echo "❌ Nginx not installed"; exit 1; }
+pm2 --version || { echo "❌ PM2 not installed"; exit 1; }
 
 echo "✅ Dependencies installed successfully!"
