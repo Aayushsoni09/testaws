@@ -8,7 +8,7 @@ export NVM_DIR="/home/ec2-user/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" || { echo "❌ NVM not found at $NVM_DIR"; exit 1; }
 
 # Ensure the correct Node.js version is used
-nvm use 14 || { echo "❌ Failed to use Node.js 14"; exit 1; }
+nvm use 18 || { echo "❌ Failed to use Node.js 18"; exit 1; }
 
 APP_NAME="nextjsproject"
 
