@@ -27,7 +27,7 @@ nvm alias default 18
 
 # Install Nginx (requires sudo)
 echo "=== Installing Nginx ==="
-sudo amazon-linux-extras install -y nginx1 || { echo "❌ Nginx installation failed"; exit 1; }
+sudo dnf install -y nginx || { echo "❌ Nginx installation failed"; exit 1; }
 
 # Install PM2 globally
 echo "=== Installing PM2 ==="
