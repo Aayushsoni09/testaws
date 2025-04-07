@@ -21,7 +21,7 @@ sudo dnf install -y nginx || { echo "❌ Nginx installation failed"; exit 1; }
 
 # Install PM2 globally
 echo "=== Installing PM2 ==="
-npm install -g pm2 || { echo "❌ PM2 installation failed"; exit 1; }
+sudo npm install -g pm2 || { echo "❌ PM2 installation failed"; exit 1; }
 
 # Configure Nginx
 echo "=== Configuring Nginx ==="
@@ -30,20 +30,18 @@ server {
     listen 80;
     server_name _;
     location / {
-        proxy_pass http://localhost:3000;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection 'upgrade';
-        proxy_set_header Host $host;
-        proxy_cache_bypass $http_upgrade;
+        return 200 'Nginx is installed and running.';
+        add_header Content-Type text/plain;
     }
 }
 EOF
-
+echo "=== Testing Nginx config ==="
+sudo nginx -t || { echo "❌ Nginx config test failed"; exit 1; }
 # Start and enable Nginx
 echo "=== Starting services ==="
-sudo systemctl enable nginx || { echo "❌ Failed to enable Nginx"; exit 1; }
 sudo systemctl start nginx || { echo "❌ Failed to start Nginx"; exit 1; }
+sudo systemctl enable nginx || { echo "❌ Failed to enable Nginx"; exit 1; }
+
 
 # Verify installations
 echo "=== Verifying Versions ==="
