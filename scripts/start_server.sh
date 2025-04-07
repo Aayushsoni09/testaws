@@ -2,6 +2,10 @@
 set -e
 
 echo "=== Starting server ==="
+echo "Current working directory: $(pwd)"
+echo "Contents:"
+ls -la
+
 
 # === Step 1: Ensure Nginx is up and running ===
 echo "=== Checking Nginx ==="
