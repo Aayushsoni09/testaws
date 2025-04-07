@@ -23,6 +23,13 @@ sudo dnf install -y nginx || { echo "❌ Nginx installation failed"; exit 1; }
 echo "=== Installing PM2 ==="
 sudo npm install -g pm2 || { echo "❌ PM2 installation failed"; exit 1; }
 
+# Ensure Nginx log directory and files exist
+echo "=== Ensuring Nginx log directory and files exist ==="
+sudo mkdir -p /var/log/nginx
+sudo touch /var/log/nginx/error.log
+sudo chown nginx:nginx /var/log/nginx/error.log
+sudo chmod 640 /var/log/nginx/error.log
+
 # Configure Nginx
 echo "=== Configuring Nginx ==="
 sudo tee /etc/nginx/conf.d/nextjs_proxy.conf > /dev/null <<'EOF'
