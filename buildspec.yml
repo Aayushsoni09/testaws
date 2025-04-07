@@ -34,6 +34,7 @@ artifacts:
     - src/**
     - package*.json
     - next.config.mjs
+    - jsconfig.json
     - .npmrc  # Only include if needed for deployment
   discard-paths: no
   base-directory: .
