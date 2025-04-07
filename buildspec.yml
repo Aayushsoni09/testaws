@@ -26,10 +26,11 @@ phases:
       - echo "Build completed successfully."
 
 artifacts:
-  files:
+  files: 
     - appspec.yml
     - scripts/**
     - public/**
+    - pages/**
     - src/**
     - package*.json
     - next.config.mjs
