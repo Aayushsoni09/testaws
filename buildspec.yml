@@ -10,6 +10,11 @@ phases:
   
   build:
     commands:
+      - echo "Current directory:"
+      - pwd
+      - ls -la
+      - ls -la src
+      - ls -la src/styles
       - echo "Running build process..."
       - npm run build
 
@@ -23,16 +28,22 @@ phases:
       - ls -la scripts/
       - echo "Cleaning sensitive files..."
       - rm -f .npmrc
+      - echo "Listing contents of src/styles..."
+      - ls -la src/styles
+      - echo "Listing final build output..."
+      - ls -R
       - echo "Build completed successfully."
 
 artifacts:
-  files:
+  files: 
     - appspec.yml
     - scripts/**
     - public/**
+    - pages/**
     - src/**
     - package*.json
-    - next.config.mjs
+    - next.config.js
+    - jsconfig.json
     - .npmrc  # Only include if needed for deployment
   discard-paths: no
   base-directory: .
