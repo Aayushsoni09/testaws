@@ -39,11 +39,10 @@ artifacts:
     - appspec.yml
     - scripts/**
     - public/**
-    - pages/**
     - src/**
     - package*.json
     - next.config.js
     - jsconfig.json
-    - .npmrc  # Only include if needed for deployment
+    - .npmrc 
   discard-paths: no
   base-directory: .
