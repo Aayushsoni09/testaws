@@ -30,6 +30,8 @@ phases:
       - rm -f .npmrc
       - echo "Listing contents of src/styles..."
       - ls -la src/styles
+      - echo "Listing final build output..."
+      - ls -R
       - echo "Build completed successfully."
 
 artifacts:
@@ -44,4 +46,4 @@ artifacts:
     - jsconfig.json
     - .npmrc  # Only include if needed for deployment
   discard-paths: no
-  base-directory: testaws
+  base-directory: .
