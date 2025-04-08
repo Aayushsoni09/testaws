@@ -33,7 +33,7 @@ artifacts:
     - pages/**
     - src/**
     - package*.json
-    - next.config.mjs
+    - next.config.js
     - jsconfig.json
     - .npmrc  # Only include if needed for deployment
   discard-paths: no
