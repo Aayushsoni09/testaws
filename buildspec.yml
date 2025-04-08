@@ -23,6 +23,8 @@ phases:
       - ls -la scripts/
       - echo "Cleaning sensitive files..."
       - rm -f .npmrc
+      - echo "Listing contents of src/styles..."
+      - ls -la src/styles
       - echo "Build completed successfully."
 
 artifacts:
@@ -37,4 +39,4 @@ artifacts:
     - jsconfig.json
     - .npmrc  # Only include if needed for deployment
   discard-paths: no
-  base-directory: .
+  base-directory: testaws
