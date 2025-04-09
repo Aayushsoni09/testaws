@@ -10,6 +10,9 @@ hooks:
       timeout: 300
       runas: root
   BeforeInstall:
+    - location: scripts/cleanup.sh  # New cleanup script
+      timeout: 300
+      runas: root
     - location: scripts/install_dependencies.sh
       timeout: 300
       runas: root
