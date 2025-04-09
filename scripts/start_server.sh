@@ -6,7 +6,6 @@ echo "Current working directory: $(pwd)"
 echo "Contents:"
 ls -la
 
-
 # === Step 1: Ensure Nginx is up and running ===
 echo "=== Checking Nginx ==="
 if ! systemctl is-active --quiet nginx; then
@@ -16,12 +15,24 @@ sudo systemctl enable nginx || { echo "❌ Failed to enable Nginx"; exit 1; }
 
 # === Step 2: Start Next.js app with PM2 ===
 echo "=== Starting Next.js app with PM2 ==="
-cd /var/www/nextjsproject || { echo "❌ Directory /var/www/nextjsproject not found"; exit 1; }
+
+# Dynamically determine the app root (one level above scripts/)
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+APP_ROOT="$(dirname "$SCRIPT_DIR")"
+
+echo "Changing to app directory: $APP_ROOT"
+cd "$APP_ROOT" || { echo "❌ Failed to change to app directory"; exit 1; }
+
+# Install dependencies (optional, but safe)
+echo "Installing dependencies..."
+npm install || { echo "❌ npm install failed"; exit 1; }
 
 # Build the app
+echo "Building the app..."
 npm run build || { echo "❌ npm run build failed"; exit 1; }
 
 # Start app with PM2
+echo "Starting app with PM2..."
 pm2 start npm --name "nextjsproject" -- start || { echo "❌ PM2 failed to start app"; exit 1; }
 pm2 save || { echo "❌ PM2 save failed"; exit 1; }
 
