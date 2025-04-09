@@ -25,9 +25,7 @@ cd "$APP_ROOT" || { echo "❌ Failed to change to app directory"; exit 1; }
 echo "New working directory: $(pwd)"
 echo "Contents of APP_ROOT:"
 ls -la
-# Install dependencies (optional, but safe)
-echo "Installing dependencies..."
-npm install || { echo "❌ npm install failed"; exit 1; }
+
 
 # Build the app
 #echo "Building the app..."
