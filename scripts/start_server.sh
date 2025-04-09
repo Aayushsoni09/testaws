@@ -37,9 +37,12 @@ pm2 start npm --name "nextjsproject" -- start || { echo "❌ PM2 failed to start
 pm2 save || { echo "❌ PM2 save failed"; exit 1; }
 
 # Set up PM2 to run on system boot as ec2-user
+#pm2 startup systemd -u ec2-user --hp /home/ec2-user || { echo "❌ PM2 startup setup failed"; exit 1; }
 echo "=== Setting up PM2 startup ==="
-pm2 startup systemd -u ec2-user --hp /home/ec2-user || { echo "❌ PM2 startup setup failed"; exit 1; }
-sudo systemctl enable pm2-ec2-user || { echo "❌ Failed to enable PM2 service"; exit 1; }
+sudo env PATH=$PATH:/usr/bin pm2 startup systemd -u ec2-user --hp /home/ec2-user
+pm2 save
+sudo systemctl daemon-reload
+#sudo systemctl enable pm2-ec2-user || { echo "❌ Failed to enable PM2 service"; exit 1; }
 
 # === Step 3: Update Nginx config for reverse proxy ===
 echo "=== Updating Nginx to reverse proxy ==="
