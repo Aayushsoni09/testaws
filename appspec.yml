@@ -10,13 +10,13 @@ hooks:
       timeout: 300
       runas: root
   BeforeInstall:
-    - location: scripts/cleanup.sh  # New cleanup script
+    - location: scripts/cleanup.sh  # Cleanup ONLY here
       timeout: 300
       runas: root
+  AfterInstall:                      # Install deps AFTER files are copied
     - location: scripts/install_dependencies.sh
       timeout: 300
       runas: root
-  AfterInstall:
     - location: scripts/install_app.sh
       timeout: 300
       runas: root
