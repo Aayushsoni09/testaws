@@ -12,11 +12,11 @@ phases:
     commands:
       - echo "Current directory:"
       - pwd
-      - ls -la
       - ls -la src
       - ls -la src/styles
       - echo "Running build process..."
       - npm run build
+      - rm -rf .next/cache #removes cache files
 
   post_build:
     commands:
