@@ -30,8 +30,8 @@ echo "Installing dependencies..."
 npm install || { echo "❌ npm install failed"; exit 1; }
 
 # Build the app
-echo "Building the app..."
-npm run build || { echo "❌ npm run build failed"; exit 1; }
+#echo "Building the app..."
+#npm run build || { echo "❌ npm run build failed"; exit 1; }
 
 # Start app with PM2
 echo "Starting app with PM2..."
