@@ -25,7 +25,7 @@ npm install --production || { echo "❌ npm install failed"; exit 1; }
 # ========== Post-Install Setup ==========
 # Fix ownership
 sudo chown -R ec2-user:ec2-user /var/www/nextjsproject || { echo "❌ Failed to change ownership"; exit 1; }
-
+sudo chmod -R 755 /var/www/nextjsproject
 # Configure Nginx logs
 echo "=== Ensuring Nginx log directory exists ==="
 sudo mkdir -p /var/log/nginx
