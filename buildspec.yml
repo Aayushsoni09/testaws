@@ -34,14 +34,9 @@ phases:
       - echo "Build completed successfully."
 
 artifacts:
-  files: 
-    - appspec.yml
-    - scripts/**
-    - public/**
-    - src/**
-    - package*.json
-    - next.config.js
-    - jsconfig.json
-    - .npmrc 
-  discard-paths: no
+  files:
+  - "**/*"
+  - "!node_modules/**"
   base-directory: .
+  discard-paths: no
+ 
