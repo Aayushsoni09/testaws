@@ -7,10 +7,12 @@ echo "=== Starting dependencies installation ==="
 if [ ! -d "/var/www/nextjsproject" ]; then
     sudo mkdir -p /var/www/nextjsproject
 fi
-
+echo "=== Installing dependencies ==="
+cd /var/www/nextjsproject
+npm install --production
 # Change ownership to ec2-user
 sudo chown -R ec2-user:ec2-user /var/www/nextjsproject || { echo "❌ Failed to change ownership"; exit 1; }
-
+echo "✅ Dependencies installed!"
 # Install Node.js 18 and npm via dnf (smaller footprint than NVM)
 echo "=== Installing Node.js 18 ==="
 sudo dnf install -y nodejs || { echo "❌ Failed to install Node.js"; exit 1; }
