@@ -1,6 +1,11 @@
 #!/bin/bash
 set -e
-echo "=== Cleaning existing node_modules ==="
-cd /var/www/nextjsproject
+
+echo "=== Cleaning existing files ==="
+cd /var/www/nextjsproject || exit 1
+
+# Delete previous Next.js build and node_modules
+rm -rf .next
 rm -rf node_modules
+
 echo "✅ Cleanup done!"
