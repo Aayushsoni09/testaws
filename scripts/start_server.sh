@@ -33,7 +33,7 @@ ls -la
 
 # Start app with PM2
 echo "Starting app with PM2..."
-pm2 start npm --name "nextjsproject" -- start -- -H 0.0.0.0 || { echo "❌ PM2 failed to start app"; exit 1; }
+pm2 start npm --name "nextjsproject" -- start -- -H 0.0.0.0 --prefix /var/www/nextjsproject || { echo "❌ PM2 failed to start app"; exit 1; }
 pm2 save || { echo "❌ PM2 save failed"; exit 1; }
 
 # Set up PM2 to run on system boot as ec2-user
