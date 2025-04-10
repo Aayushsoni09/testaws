@@ -15,17 +15,8 @@ sudo dnf install -y nginx || { echo "❌ Nginx installation failed"; exit 1; }
 # Install PM2 globally
 echo "=== Installing PM2 ==="
 sudo npm install -g pm2 || { echo "❌ PM2 installation failed"; exit 1; }
+echo "✅ System dependencies installed!"
 
-# ========== App Dependencies SECOND ==========
-# Navigate to app directory (files are now copied by CodeDeploy)
-echo "=== Installing app dependencies ==="
-cd /var/www/nextjsproject || { echo "❌ Failed to enter /var/www/nextjsproject"; exit 1; }
-npm install --production || { echo "❌ npm install failed"; exit 1; }
-
-# ========== Post-Install Setup ==========
-# Fix ownership
-sudo chown -R ec2-user:ec2-user /var/www/nextjsproject || { echo "❌ Failed to change ownership"; exit 1; }
-sudo chmod -R 755 /var/www/nextjsproject
 # Configure Nginx logs
 echo "=== Ensuring Nginx log directory exists ==="
 sudo mkdir -p /var/log/nginx
