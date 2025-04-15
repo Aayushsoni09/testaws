@@ -13,7 +13,11 @@ if ! systemctl is-active --quiet nginx; then
 fi
 sudo systemctl enable nginx || { echo "❌ Failed to enable Nginx"; exit 1; }
 
-# === Step 2: Start Next.js app with PM2 ===
+# === Step 2: Ensure port 3000 is free ===
+echo "=== Ensuring port 3000 is free ==="
+fuser -k 3000/tcp || true
+
+# === Step 3: Start Next.js app with PM2 ===
 echo "=== Starting Next.js app with PM2 ==="
 
 # Dynamically determine the app root (one level above scripts/)
@@ -26,25 +30,29 @@ echo "New working directory: $(pwd)"
 echo "Contents of APP_ROOT:"
 ls -la
 
+# Ensure dependencies are installed
+echo "=== Ensuring dependencies are installed ==="
+rm -rf node_modules package-lock.json
+npm install || { echo "❌ npm install failed"; exit 1; }
 
-# Build the app
-#echo "Building the app..."
-#npm run build || { echo "❌ npm run build failed"; exit 1; }
+# Build the app (uncommented to ensure a fresh build)
+echo "=== Building the app ==="
+npm run build || { echo "❌ npm run build failed"; exit 1; }
 
 # Start app with PM2
-echo "Starting app with PM2..."
+echo "=== Starting app with PM2 ==="
+pm2 delete all || true  # Clear any existing processes
 pm2 start npm --name "nextjsproject" -- start -- -H 0.0.0.0 --prefix /var/www/nextjsproject || { echo "❌ PM2 failed to start app"; exit 1; }
 pm2 save || { echo "❌ PM2 save failed"; exit 1; }
 
 # Set up PM2 to run on system boot as ec2-user
-#pm2 startup systemd -u ec2-user --hp /home/ec2-user || { echo "❌ PM2 startup setup failed"; exit 1; }
 echo "=== Setting up PM2 startup ==="
-sudo env PATH=$PATH:/usr/bin pm2 startup systemd -u ec2-user --hp /home/ec2-user
+sudo env PATH=$PATH:/usr/bin pm2 startup systemd -u ec2-user --hp /home/ec2-user || { echo "❌ PM2 startup setup failed"; exit 1; }
 pm2 save
 sudo systemctl daemon-reload
-#sudo systemctl enable pm2-ec2-user || { echo "❌ Failed to enable PM2 service"; exit 1; }
+sudo systemctl enable pm2-ec2-user || { echo "❌ Failed to enable PM2 service"; exit 1; }
 
-# === Step 3: Update Nginx config for reverse proxy ===
+# === Step 4: Update Nginx config for reverse proxy ===
 echo "=== Updating Nginx to reverse proxy ==="
 sudo tee /etc/nginx/conf.d/nextjs_proxy.conf > /dev/null <<'EOF'
 server {
