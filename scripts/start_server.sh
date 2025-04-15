@@ -6,6 +6,11 @@ echo "Current working directory: $(pwd)"
 echo "Contents:"
 ls -la
 
+echo "=== Checking CodeDeploy agent ==="
+if ! systemctl is-active --quiet codedeploy-agent; then
+    sudo systemctl start codedeploy-agent || { echo "❌ Failed to start CodeDeploy agent"; exit 1; }
+fi
+
 # === Step 1: Ensure Nginx is up and running ===
 echo "=== Checking Nginx ==="
 if ! systemctl is-active --quiet nginx; then
