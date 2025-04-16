@@ -38,7 +38,7 @@ ls -la
 # Ensure dependencies are installed
 echo "=== Ensuring dependencies are installed ==="
 sudo rm -rf node_modules package-lock.json
-npm install || { echo "❌ npm install failed"; exit 1; }
+npm install --prefer-offline || { echo "❌ npm install failed"; exit 1; }
 
 # Build the app (uncommented to ensure a fresh build)
 echo "=== Building the app ==="
